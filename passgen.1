@@ -1,0 +1,84 @@
+.\" Copyright (c) 2026 Armin Shirazi
+.\"
+.\" SPDX-License-Identifier: BSD-3-Clause
+.Dd November 16, 2026
+.Dt PASSGEN 1
+.Os
+.Sh NAME
+.Nm passgen
+.Nd Generate pseudorandom passphrases
+.Sh SYNOPSIS
+.Nm
+.Op Fl p Ar path
+.Op Fl w Ar count
+.Op Fl c Ar max
+.Op Fl n Ar max
+.Sh DESCRIPTION
+.Nm
+Generates a pseudorandom passphrase using a given wordlist.
+.Pp
+By default,
+.Nm
+reads its wordlist from
+.Pa /usr/local/share/dict/wordlist .
+Alternative wordlists can be specified by 
+.Fl p .
+The wordlist must follow the format of
+.Lk https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt "EFF's large wordlist" ,
+with each entry consisting of a numeric identifier and a word.
+.Pp
+Words may randomly get capitalized.
+The value specified by
+.Fl c
+sets an upper bound to the number of capitalized words.
+.Pp
+Words may randomly get appended by a number randomly selected between 0-9.
+The value specified by
+.Fl n
+sets an upper bound to the number of words that may get appended by a number.
+.Sh OPTIONS
+The following options are available:
+.Bl -tag -width Ds
+.It Fl p Ar path
+This option specifies the path of the wordlist.
+Defaults to
+.Pa /usr/local/share/dict/wordlist .
+.It Fl w Ar count
+This option specifies the number of words in the passphrase.
+The minimum value is 3.
+The default value is 5.
+.It Fl c Ar max
+This option specifies the maximum number of capitalized words.
+The default is half the number of words.
+.It Fl n Ar max
+This option specifies the maximum number of words that may be appended by a number.
+The default is the value specified by
+.Fl c .
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh SEE ALSO
+.Xr awk 1 ,
+.Xr jot 1
+.Sh AUTHORS
+.An Armin Shirazi Aq Mt sharmeanix@tutamail.com
+.Sh SECURITY CONSIDERATIONS
+.Nm
+uses
+.Xr sort 1
+.Fl R
+flag to pick the words.
+.Pp
+Random number generation is done via
+.Xr jot 1
+when available.
+Otherwise, the
+.Fn rand
+function from
+.Xr awk 1
+is used.
+.Xr awk 1
+is seeded with four bytes read from
+.Pa /dev/urandom
+followed by the PID of
+.Nm .
